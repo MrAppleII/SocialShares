@@ -12,7 +12,5 @@ Message: string (This message is used for twitter posts. default is blank).
 Link: string *Required* (this is the link we are sharing).
 
 onModalClose: function (this function is called when "Cancel" and "X" is clicked, default is do nothing).
-
-onModalOpen: function  (this function is called as soon as the modal opens. Default is nothing).
   
 modalWidth: string (this sets the width of the Modal, default is 350px. Example Format: "550px"  ).
