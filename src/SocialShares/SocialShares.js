@@ -117,7 +117,7 @@ class SocialShares extends Component {
     try {
       return props.showModalStatus ? (
         <>
-          
+
             <ModelMask>
               <ModalWrapper onClick={this.onMaskClick}>
                 <ModalContainer
@@ -166,7 +166,7 @@ class SocialShares extends Component {
                 </ModalContainer>
               </ModalWrapper>
             </ModelMask>
-          
+
         </>
       ) : null
     } catch (e) {
@@ -181,7 +181,7 @@ class SocialShares extends Component {
       }
 
       return this.state.isErrorCurrentlyDisplayed ? (
-       
+
           <ModelMask>
             <ModalWrapper onClick={emergencyClose}>
               <ModalContainer
@@ -210,7 +210,7 @@ class SocialShares extends Component {
               </ModalContainer>
             </ModalWrapper>
           </ModelMask>
-       
+
       ) : null
     }
   }
@@ -241,7 +241,8 @@ const ModelMask = styled.div`
   background-color: rgba(0, 0, 0, 0.5);
   display: table;
   transition: opacity 0.3s ease;
-`/* Animations for the container */
+`
+/******************************* Copy These Lines for the pop in effect ****************/
 const fadeInEffect = keyframes`
 from {
   -webkit-transform: scale3d(1.3, 1.3, 1.3);
@@ -249,18 +250,6 @@ from {
 }
 `
 
-/* This styling is for the corner buttons containing the content */
-
-const ModalDefaultButton = styled.a`
-  flex: 0 0 12px;
-  cursor: pointer;
-  font-weight: normal !important;
-`
-const ModalWrapper = styled.div`
-  display: table-cell;
-  vertical-align: middle;
-`
-/* This styling is for the actual border containing the content */
 const ModalContainer = styled.div`
   z-index: 101;
   margin: 0px auto;
@@ -274,6 +263,19 @@ const ModalContainer = styled.div`
   animation: ${fadeInEffect} forwards cubic-bezier(0.2, 0.8, 0.2, 1);;
   animation-duration: 0.13s;
 `
+/************************************************************************************/
+/* This styling is for the corner buttons containing the content */
+
+const ModalDefaultButton = styled.a`
+  flex: 0 0 12px;
+  cursor: pointer;
+  font-weight: normal !important;
+`
+const ModalWrapper = styled.div`
+  display: table-cell;
+  vertical-align: middle;
+`
+
 const ModalHeaderCenterItem = styled.div`
   flex-grow: 1;
   text-align: center;
