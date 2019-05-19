@@ -1,13 +1,12 @@
-import React, { useState } from "react"
+import React, { Component } from "react"
 import PropTypes from "prop-types"
-import "./animation.css"
 import FacebookLogoImage from "./icons/facebook_logo.png"
 import TwitterLogoImage from "./icons/twitter_logo.png"
 import LinkedInLogo from "./icons/linkedin_logo.png"
 import copyPasteIcon from "./icons/copy_paste.png"
-import styled from "styled-components"
+import styled, {keyframes} from "styled-components"
 
-const linkObjectMap = [
+let linkObjectMap = [
   {
     name: "Facebook",
     linkUri: "https://www.facebook.com/sharer/sharer.php?u=",
@@ -30,7 +29,7 @@ const linkObjectMap = [
   },
 ]
 
-const itemBlockGenerator = (Message, Link) => (
+let itemBlockGenerator = (Message, Link) => (
   <>
     {linkObjectMap.map((shareItemLink, i) => {
       let handreturnLink = () => {
@@ -67,99 +66,143 @@ const itemBlockGenerator = (Message, Link) => (
     })}
   </>
 )
-SocialShares.propTypes = {
-  showModalStatus: PropTypes.bool,
-  Message: PropTypes.string,
-  Link: PropTypes.string.isRequired,
-  onModalClose: PropTypes.func,
-
-  modalWidth: PropTypes.string,
-}
-SocialShares.defaultProps = {
-  showModalStatus: false,
-  Message: "",
-  onModalClose: () => {},
-
-  modalWidth: "350px",
-}
-
-function SocialShares({
-  showModalStatus,
-  Message,
-  Link,
-  onModalClose,
-
-  modalWidth,
-}) {
-  const [copyTextString, setCopyString] = useState("Copy Link")
-  const [copyDisplayStatus, setCopyDisplayStatus] = useState(true)
-
-  const onMaskClick = e => {
-    onModalClose()
+class SocialShares extends Component {
+  constructor(props, context) {
+    super(props, context);
+    this.state = {
+      copyTextString: "Copy Link",
+      copyDisplayStatus: true,
+      isErrorCurrentlyDisplayed: true, //This is ONLY for the error messaage. Default is true incase we have to show it.
+    };
+    this.onMaskClick = this.onMaskClick.bind(this);
   }
-  const onCopyPaste = () => {
+  componentDidMount() {}
+
+  componentWillUnmount() {}
+
+  onMaskClick(event) {
+    this.props.onModalClose()
+  }
+  setErrorDisplay() {
+    this.setState({
+      isCurrentlyDisplayed: true,
+    })
+  }
+
+  onCopyPaste = () => {
     var textField = document.createElement("textarea")
-    textField.innerText = Link
+    textField.innerText = this.props.Link
     document.body.appendChild(textField)
     textField.select()
     document.execCommand("copy")
     textField.remove()
+    this.setState({
+      copyTextString: "Link Copied to Clipboard!",
+      copyDisplayStatus: false,
+    })
 
-    setCopyString("Link Copied to Clipboard!")
-
-    setCopyDisplayStatus(false)
-
-    setTimeout(function() {
-      //Start the timer
-      setCopyString("Copy Link") //After 1 second, set render to true
-      setCopyDisplayStatus(true)
-    }, 500)
+    setTimeout(
+      function() {
+        this.setState({
+          copyTextString: "Copy Link",
+          copyDisplayStatus: true,
+        })
+      }.bind(this),
+      500
+    )
   }
-  try {
-    return showModalStatus ? (
-      <>
-        <div className="modal-fade-enter">
+
+  render() {
+    const { props, state } = this
+    try {
+      return props.showModalStatus ? (
+        <>
+          
+            <ModelMask>
+              <ModalWrapper onClick={this.onMaskClick}>
+                <ModalContainer
+                  onClick={e => {
+                    // We are simply preventing the e based function up above from misfiring
+                    e.stopPropagation()
+                  }}
+                  style={{ maxWidth: props.modalWidth }}
+                >
+                  <ModalHeader>
+                    <ModalDefaultButton />
+
+                    <ModalHeaderCenterItem>Share</ModalHeaderCenterItem>
+
+                    <ModalDefaultButton onClick={this.onMaskClick}>
+                      X
+                    </ModalDefaultButton>
+                  </ModalHeader>
+                  <ModalBody>
+                    {itemBlockGenerator(props.Message, props.Link)}
+                    <ShareItemRow onClick={this.onCopyPaste}>
+                      <ShareItemRowImage
+                        src={copyPasteIcon}
+                        height="42"
+                        width="42"
+                      />
+                      <ShareItemText
+                        className={
+                          this.state.copyDisplayStatus
+                            ? ""
+                            : "modal-fade-leave-long"
+                        }
+                      >
+                        {this.state.copyTextString}
+                      </ShareItemText>
+                    </ShareItemRow>
+                  </ModalBody>
+                  <ModalHeader>
+                    <ModalDefaultButton />
+                    <ModalHeaderCenterButton>
+                      <div onClick={this.onMaskClick}>Cancel</div>
+                    </ModalHeaderCenterButton>
+
+                    <ModalDefaultButton />
+                  </ModalHeader>
+                </ModalContainer>
+              </ModalWrapper>
+            </ModelMask>
+          
+        </>
+      ) : null
+    } catch (e) {
+      if (!process.env.NODE_ENV || process.env.NODE_ENV === "development") {
+        console.log(e)
+      }
+
+      let emergencyClose = () => {
+        this.setState({
+          isErrorCurrentlyDisplayed: false,
+        })
+      }
+
+      return this.state.isErrorCurrentlyDisplayed ? (
+       
           <ModelMask>
-            <ModalWrapper onClick={onMaskClick}>
+            <ModalWrapper onClick={emergencyClose}>
               <ModalContainer
                 onClick={e => {
                   // We are simply preventing the e based function up above from misfiring
                   e.stopPropagation()
                 }}
-                style={{ maxWidth: modalWidth }}
+                style={{ maxWidth: "350px" }}
               >
                 <ModalHeader>
-                  <ModalDefaultButton />
-
-                  <ModalHeaderCenterItem>Share</ModalHeaderCenterItem>
-
-                  <ModalDefaultButton onClick={onModalClose}>
-                    X
-                  </ModalDefaultButton>
+                  <ModalHeaderCenterItem>Oops</ModalHeaderCenterItem>
                 </ModalHeader>
                 <ModalBody>
-                  {itemBlockGenerator(Message, Link)}
-                  <ShareItemRow onClick={onCopyPaste}>
-                    <ShareItemRowImage
-                      src={copyPasteIcon}
-                      height="42"
-                      width="42"
-                    />
-                    <ShareItemText
-                      className={
-                        copyDisplayStatus
-                          ? "modal-fade-enter"
-                          : "modal-fade-leave-long"
-                      }
-                    >
-                      {copyTextString}
-                    </ShareItemText>
-                  </ShareItemRow>
+                  <h4 style={{ textAlign: "center" }}>
+                    Something went wrong here.
+                  </h4>
                 </ModalBody>
                 <ModalHeader>
                   <ModalDefaultButton />
                   <ModalHeaderCenterButton>
-                    <div onClick={onModalClose}>Cancel</div>
+                    <div onClick={emergencyClose}>Okay</div>
                   </ModalHeaderCenterButton>
 
                   <ModalDefaultButton />
@@ -167,38 +210,24 @@ function SocialShares({
               </ModalContainer>
             </ModalWrapper>
           </ModelMask>
-        </div>
-      </>
-    ) : null
-  } catch {
-    return (
-      <div className="modal-fade-enter">
-        <ModelMask>
-          <ModalWrapper onClick={onMaskClick}>
-            <ModalContainer
-              onClick={e => {
-                // We are simply preventing the e based function up above from misfiring
-                e.stopPropagation()
-              }}
-            >
-              <ModalHeader>
-                <ModalHeaderCenterItem>Oops</ModalHeaderCenterItem>
-              </ModalHeader>
-              <ModalBody>Something went wrong here.</ModalBody>
-              <ModalHeader>
-                <ModalDefaultButton />
-                <ModalHeaderCenterButton>
-                  <div onClick={onModalClose}>Okay</div>
-                </ModalHeaderCenterButton>
-
-                <ModalDefaultButton />
-              </ModalHeader>
-            </ModalContainer>
-          </ModalWrapper>
-        </ModelMask>
-      </div>
-    )
+       
+      ) : null
+    }
   }
+}
+SocialShares.propTypes = {
+  showModalStatus: PropTypes.bool,
+  Message: PropTypes.string,
+  Link: PropTypes.string.isRequired,
+  onModalClose: PropTypes.func,
+  modalWidth: PropTypes.string,
+}
+SocialShares.defaultProps = {
+  showModalStatus: false,
+  Message: "",
+  Link: "",
+  onModalClose: function() {},
+  modalWidth: "350px",
 }
 
 // Styling for the Modal Components **********
@@ -212,7 +241,14 @@ const ModelMask = styled.div`
   background-color: rgba(0, 0, 0, 0.5);
   display: table;
   transition: opacity 0.3s ease;
+`/* Animations for the container */
+const fadeInEffect = keyframes`
+from {
+  -webkit-transform: scale3d(1.3, 1.3, 1.3);
+  transform: scale3d(1.3, 1.3, 1.3);
+}
 `
+
 /* This styling is for the corner buttons containing the content */
 
 const ModalDefaultButton = styled.a`
@@ -235,6 +271,8 @@ const ModalContainer = styled.div`
   font-family: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", Roboto,
     "Helvetica Neue", Arial, sans-serif !important;
   transition: all 0.3s ease;
+  animation: ${fadeInEffect} forwards cubic-bezier(0.2, 0.8, 0.2, 1);;
+  animation-duration: 0.13s;
 `
 const ModalHeaderCenterItem = styled.div`
   flex-grow: 1;
@@ -270,5 +308,6 @@ const ShareItemRowImage = styled.img`
   margin-right: 1rem;
   justify-content: center;
 `
+
 
 export default SocialShares
