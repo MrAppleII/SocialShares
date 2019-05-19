@@ -72,14 +72,14 @@ SocialShares.propTypes = {
   Message: PropTypes.string,
   Link: PropTypes.string.isRequired,
   onModalClose: PropTypes.func,
-  onModalOpen: PropTypes.func,
+
   modalWidth: PropTypes.string,
 }
 SocialShares.defaultProps = {
   showModalStatus: false,
   Message: "",
   onModalClose: () => {},
-  onModalOpen: () => {},
+
   modalWidth: "350px",
 }
 
@@ -88,13 +88,12 @@ function SocialShares({
   Message,
   Link,
   onModalClose,
-  openModal,
 
   modalWidth,
 }) {
   const [copyTextString, setCopyString] = useState("Copy Link")
   const [copyDisplayStatus, setCopyDisplayStatus] = useState(true)
-  
+
   const onMaskClick = e => {
     onModalClose()
   }
@@ -110,20 +109,13 @@ function SocialShares({
 
     setCopyDisplayStatus(false)
 
-    setTimeout(
-      function() {
-        //Start the timer
-        setCopyString("Copy Link") //After 1 second, set render to true
-        setCopyDisplayStatus(true)
-      },
-      500
-    )
+    setTimeout(function() {
+      //Start the timer
+      setCopyString("Copy Link") //After 1 second, set render to true
+      setCopyDisplayStatus(true)
+    }, 500)
   }
   try {
-    if(showModalStatus){
-      openModal();
-
-    }
     return showModalStatus ? (
       <>
         <div className="modal-fade-enter">
@@ -240,7 +232,8 @@ const ModalContainer = styled.div`
   background-color: #fff;
   border-radius: 4px;
   box-shadow: 0px 20px 40px rgba(0, 0, 0, 0.15);
-  font-family: -apple-system,system-ui,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif !important;
+  font-family: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, sans-serif !important;
   transition: all 0.3s ease;
 `
 const ModalHeaderCenterItem = styled.div`
