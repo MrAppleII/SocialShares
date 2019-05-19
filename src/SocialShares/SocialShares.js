@@ -94,7 +94,7 @@ function SocialShares({
 }) {
   const [copyTextString, setCopyString] = useState("Copy Link")
   const [copyDisplayStatus, setCopyDisplayStatus] = useState(true)
-
+  
   const onMaskClick = e => {
     onModalClose()
   }
@@ -120,6 +120,10 @@ function SocialShares({
     )
   }
   try {
+    if(showModalStatus){
+      openModal();
+
+    }
     return showModalStatus ? (
       <>
         <div className="modal-fade-enter">
