@@ -76,7 +76,7 @@ SocialShares.propTypes = {
   modalWidth: PropTypes.string,
 }
 SocialShares.defaultProps = {
-  showModalStatus: true,
+  showModalStatus: false,
   Message: "",
   onModalClose: () => {},
   onModalOpen: () => {},
