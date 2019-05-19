@@ -5,14 +5,14 @@ Social Shares is a react component that can share a link in a new tab.
 
 There are a few props that can be passed it and a few that must be passed in.
   
-showModalStatus: PropTypes.bool (Default is false).
+showModalStatus: bool (Determines if we are show the modal. Default is false).
 
-Message: PropTypes.string (default is blank).
+Message: string (This message is used for twitter posts. default is blank).
 
-Link: PropTypes.string.isRequired (this is the link we are sharing).
+Link: string *Required* (this is the link we are sharing).
 
-onModalClose: PropTypes.func (this function is called when "Cancel" and "X" is clicked, default is do nothing).
+onModalClose: function (this function is called when "Cancel" and "X" is clicked, default is do nothing).
 
-onModalOpen: PropTypes.func,  (this function is called as soon as the modal opens. Default is nothing).
+onModalOpen: function  (this function is called as soon as the modal opens. Default is nothing).
   
-modalWidth: PropTypes.string, (this sets the width of the Modal, default is 350px ).
+modalWidth: string (this sets the width of the Modal, default is 350px. Example Format: "550px"  ).
